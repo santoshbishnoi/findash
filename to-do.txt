@@ -1,0 +1,17 @@
+#tasks
+
+1. set up kite api
+    - get keys 
+    - access historical data
+    - print it using dash
+
+2. Display volume in the dash chart
+
+3. write a script to save nifty 50 companies 1M, 5M, 15M, 1H, 1D data in csv format
+
+4. write statistical functions 
+    - 21 EMA
+    - 50 EMA
+    - 200 EMA
+    - RSI
+

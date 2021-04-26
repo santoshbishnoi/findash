@@ -12,7 +12,7 @@ main_df=pd.read_csv("RELIANCE.NS.csv")
 main_df=main_df[main_df['Open'] != 0]
 
 # slicing the main df bot better look
-df=main_df[0:200]
+df=main_df
 
 layout = go.Layout(
         title=dict(
@@ -48,7 +48,9 @@ layout = go.Layout(
             # tickwidth=55,
             # ticklen=60
             # type="date"
-            showspikes=True,
+            # showspikes=True, #vertical line to the axis like how they have in kite
+            range=['22-12-2010','14-11-2017']
+            
         ), 
         yaxis=dict(
             # showgrid=False,
@@ -96,6 +98,7 @@ trace2={
 
 data=[trace1, trace2]
 fig=go.Figure(data=data, layout=layout)
+fig.update_layout(xaxis_range=['01-04-2020', '01-01-2021'])
 
 app.layout = html.Div(children=[
     dcc.Graph(

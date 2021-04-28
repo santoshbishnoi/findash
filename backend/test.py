@@ -5,15 +5,31 @@ import pandas as pd
 import plotly.graph_objects as go 
 
 
-
 app=dash.Dash()
 
+# df = pd.read_csv(
+#     "https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv"
+# )
 
-main_df=pd.read_csv("RELIANCE.NS.csv")
-main_df=main_df[main_df['Open'] != 0]
+# fig = px.line(df, x="Date", y="AAPL.High")
+# print(df["Date"][0])
 
-# slicing the main df bot better look
-df=main_df
+# # Use date string to set xaxis range
+# fig.update_layout(
+#     xaxis_range=["2016-02-07", "2016-12-31"], title_text="Manually Set Date Range"
+xaxis=dict(type = "category")
+# )
+# fig.show()
+
+
+
+
+
+from server import return_data
+
+df=return_data()
+
+
 
 layout = go.Layout(
         title=dict(
@@ -30,7 +46,7 @@ layout = go.Layout(
 
 
         xaxis=dict(
-            # type='category',
+            type='category',
             # showgrid=False,
             zeroline=False,
             gridwidth=0.1,
@@ -50,7 +66,6 @@ layout = go.Layout(
             # ticklen=60
             # type="date"
             # showspikes=True, #vertical line to the axis like how they have in kite
-            range=['22-12-2010','14-11-2017']
             
         ), 
         yaxis=dict(
@@ -74,11 +89,11 @@ layout = go.Layout(
     )
 
 trace1={
-    "x":df["Date"],
-    "open":df["Open"],
-    "high":df["High"],
-    "low":df["Low"],
-    "close":df["Close"],
+    "x":df["date"],
+    "open":df["open"],
+    "high":df["high"],
+    "low":df["low"],
+    "close":df["close"],
     "type":"candlestick",
     "increasing_line_color":"#53b987",
     "increasing_fillcolor":"#53b987",
@@ -87,8 +102,8 @@ trace1={
 }
 
 trace2={
-    "x":df["Date"],
-    "y":df["Close"],
+    "x":df["date"],
+    "y":df["close"],
     "type":"scatter",
     "line": {
         "dash": "solid",
@@ -107,10 +122,6 @@ app.layout = html.Div(children=[
         figure=fig
     )
 ])
-
-
-
-
 
 if __name__=='__main__':
     app.run_server(debug=True)

@@ -4,6 +4,8 @@ import dash_html_components as html
 import pandas as pd
 import plotly.graph_objects as go
 
+from dash.dependencies import Input, Output
+
 # function which gives data
 from server import return_data
 
@@ -39,6 +41,7 @@ layout = go.Layout(
         # ticklen=60
         # type="date"
         # showspikes=True, #vertical line to the axis like how they have in kite
+        range=["2021-04-25", "2021-05-30"]
     ),
     yaxis=dict(
         # showgrid=False,
@@ -62,6 +65,8 @@ df = return_data()
 
 
 
+
+
 trace1 = {
     "x": df["date"],
     "open": df["open"],
@@ -82,11 +87,41 @@ trace2 = {
     "line": {"dash": "solid", "color": "rgba(253, 253, 0, 1.0)", "width": 1.3},
 }
 
-data = [trace1, trace2]
+data = [trace1]
 fig = go.Figure(data=data, layout=layout)
-# fig.update_layout(xaxis_range=["01-04-2020", "01-01-2021"])
+fig.update_layout(xaxis_range=["2021-04-25", "2021-05-30"])
 
-app.layout = html.Div(children=[dcc.Graph(id="basic-candlestick", figure=fig)])
+app.layout = html.Div(
+    html.Div([
+        dcc.Graph(id="basic-candlestick", figure=fig),
+        dcc.Interval(
+            id="interval-component",
+            interval=1*1000,
+            n_intervals=0
+        )
+    ])
+)
+
+@app.callback(Output('basic-candlestick', 'figure'),
+              [Input('interval-component', 'n_intervals')])
+def update_chart(n):
+    new_df=return_data()
+    trace1 = {
+    "x": new_df["date"],
+    "open": new_df["open"],
+    "high": new_df["high"],
+    "low": new_df["low"],
+    "close": new_df["close"],
+    "type": "candlestick",
+    "increasing_line_color": "#53b987",
+    "increasing_fillcolor": "#53b987",
+    "decreasing_line_color": "#eb4d5c",
+    "decreasing_fillcolor": "#eb4d5c",
+    }
+    return {'data':[trace1], 'layout':layout}
 
 if __name__ == "__main__":
     app.run_server(debug=True)
+
+
+# children=[dcc.Graph(id="basic-candlestick", figure=fig)]

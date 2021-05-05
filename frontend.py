@@ -25,7 +25,7 @@ layout = go.Layout(
     width=1920,
     height=1080,
     xaxis=dict(
-        type="category",
+        # type="category",
         # showgrid=False,
         zeroline=False,
         gridwidth=0.1,
@@ -41,7 +41,12 @@ layout = go.Layout(
         # ticklen=60
         # type="date"
         # showspikes=True, #vertical line to the axis like how they have in kite
-        range=["2021-04-25", "2021-05-30"]
+        # range=["2021-04-25", "2021-05-30"]
+        rangebreaks=[
+        dict(bounds=[16,9], pattern="hour"), #hide hours outside of 9am-5pm
+    ]
+    
+
     ),
     yaxis=dict(
         # showgrid=False,
@@ -53,10 +58,14 @@ layout = go.Layout(
         linewidth=15,
         tickcolor="black",
         ticks="outside",
+        # showspikes=True,
     ),
     paper_bgcolor="white",  # sets the colour behind the plot
     plot_bgcolor="#181818",
-    # hovermode=Fasle #can turn the hover false too,
+    hovermode=False, #can turn the hover false too,
+    margin= {
+      "b": 300,
+      }
 )
 
 
@@ -89,17 +98,30 @@ trace2 = {
 
 data = [trace1]
 fig = go.Figure(data=data, layout=layout)
-fig.update_layout(xaxis_range=["2021-04-25", "2021-05-30"])
+# fig.update_layout(xaxis_range=["2021-04-25", "2021-05-30"])
+fig.update_xaxes(
+    rangebreaks=[
+        # dict(bounds=[17, 9], pattern="hour"), #hide hours outside of 9am-5pm
+        dict(bounds=[17,9], pattern="hour")
+    ]
+)
 
 app.layout = html.Div(
     html.Div([
-        dcc.Graph(id="basic-candlestick", figure=fig),
+        dcc.Graph(id="basic-candlestick", figure=fig, config={'scrollZoom':True},),
         dcc.Interval(
             id="interval-component",
-            interval=1*1000,
+            interval=20*1000,
             n_intervals=0
         )
     ])
+)
+
+fig.update_xaxes(
+    rangebreaks=[
+        # dict(bounds=[17, 9], pattern="hour"), #hide hours outside of 9am-5pm
+        dict(bounds=[17,9], pattern="hour")
+    ]
 )
 
 @app.callback(Output('basic-candlestick', 'figure'),

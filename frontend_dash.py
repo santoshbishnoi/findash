@@ -40,8 +40,9 @@ layout = go.Layout(
         # tickwidth=55,
         # ticklen=60
         # type="date"
-        # showspikes=True, #vertical line to the axis like how they have in kite
-        # range=["2021-04-25", "2021-05-30"]
+        # showspikes=True, #vertical line 
+        # to the axis like how they have in kite
+        # range=["2021-04-25", "2021-05-30"],
         rangebreaks=[
         dict(bounds=[16,9], pattern="hour"), #hide hours outside of 9am-5pm
     ]
@@ -102,9 +103,12 @@ fig = go.Figure(data=data, layout=layout)
 fig.update_xaxes(
     rangebreaks=[
         # dict(bounds=[17, 9], pattern="hour"), #hide hours outside of 9am-5pm
-        dict(bounds=[17,9], pattern="hour")
+        dict(bounds=[15.5,9.25], pattern="hour")
     ]
 )
+
+fig.add_trace(go.Candlestick(x=["2021-05-07 15:15:00+05:30"], open=[1900], close=[2100], high=[2130], low=[1880]))
+fig.show()
 
 app.layout = html.Div(
     html.Div([

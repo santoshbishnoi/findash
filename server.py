@@ -2,6 +2,7 @@ from kiteconnect import KiteConnect
 
 import pandas as pd
 import datetime as dt
+import numpy as np
 
 # collecting keys 
 from config import api_key, api_secret, request_token, access_token
@@ -16,6 +17,7 @@ kite = KiteConnect(api_key=api_key)
 
 # data = kite.generate_session(request_token, api_secret=api_secret)
 # print(data['access_token'])
+
 
 kite.set_access_token(access_token)
 
@@ -52,13 +54,24 @@ if not(market_open):
     chart_start_time=chart_end_time-chart_range
 
 
+def daily_volatility(df):
+    df["returns"]= (np.log(df.close / df.close.shift(-1)))
+    daily_std= np.std(df.returns)*100
+    return daily_std
+
+
+def return_volatility_data(option_Selected):
+    data=kite.historical_data(option_Selected, "2021-01-01", "2021-05-19", "day")
+    df=pd.DataFrame.from_dict(data)
+    daily_std=daily_volatility(df)
+    # print(df)
+    return df, daily_std
 
 
 
 
-
-def return_data():
-    data=kite.historical_data(nifty50_tokens["RELIANCE INDUSTRIES"], chart_start_time, chart_end_time, "5minute")
+def return_data(option_Selected=738561):
+    data=kite.historical_data(option_Selected, "2021-01-01", "2021-05-19", "15minute")
     df=pd.DataFrame.from_dict(data)
     # print(df)
     return df
@@ -71,7 +84,7 @@ def return_data():
 # print(kite.ohlc("NSE:INFY"))
 
 # print(kite.historical_data(nifty50_tokens["RELIANCE INDUSTRIES"], "2021-05-04", "2021-05-05", "5minute"))
-data=kite.historical_data(nifty50_tokens["RELIANCE INDUSTRIES"],"2015-01-01", "2015-06-01", "15minute")
+data=kite.historical_data(nifty50_tokens["RELIANCE INDUSTRIES"],"2021-01-01", "2021-06-01", "15minute")
 # print(data)
 df=pd.DataFrame.from_dict(data)
 # df=df.drop(df.columns[0], axis=1)
